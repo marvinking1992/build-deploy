@@ -1,18 +1,21 @@
 # Use an official Python runtime as the base image
 FROM python:3.8-slim
 
-# Set the working directory inside the container
+# Set the working directory in the container to /app
 WORKDIR /app
 
-# Copy the local application files into the container
-COPY app.py ./
-COPY requirements.txt ./
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-# Install any needed Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install the required dependencies
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-# Expose port 5000 for the Flask app to listen on
-EXPOSE 5000
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
 
-# Define the command to run the application using Flask's development server
-CMD ["python", "./app.py"]
+# Define environment variable (optional, for this example it's not strictly necessary)
+ENV NAME World
+
+# Run the Flask application when the container launches
+CMD ["python", "app.py"]
+
