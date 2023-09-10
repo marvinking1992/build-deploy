@@ -10,3 +10,4 @@ steps:
 # This will be available for subsequent steps and deployments if needed
 images:
   - 'gcr.io/$PROJECT_ID/flask-app:$SHORT_SHA'
+
