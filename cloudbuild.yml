@@ -3,13 +3,13 @@
 # Step 1: Build the Docker image
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA', '.']
+  args: ['build', '-t', 'us-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA', '.']
   id: 'Build Docker Image'
   waitFor: ['-']  # This ensures the step starts immediately. 
 
 # Step 2: Push the Docker image to Google Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA']
+  args: ['push', 'us-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA']
   id: 'Push to Artifact Registry'
   waitFor: ['Build Docker Image']  # This ensures the push only happens after the build step completes.
 
@@ -19,7 +19,7 @@ steps:
   - 'set'
   - 'image'
   - 'deployment/app-deployment'
-  - 'app=us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA'
+  - 'app=us-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1' 
   - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
@@ -28,4 +28,4 @@ steps:
 
 # Images list. This section helps in logging the built images for potential deployments or for reference.
 images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA'
+  - 'us-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA'
