@@ -38,6 +38,18 @@ steps:
   id: 'Deploy to GKE'
   waitFor: ['Apply Deployment']
 
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: 
+  - 'apply'
+  - '-f'
+  - 'service.yaml'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1' 
+  - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
+  id: 'Apply Service'
+  waitFor: ['Deploy to GKE']
+
+
 # Images list. This section helps in logging the built images for potential deployments or for reference.
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA'
