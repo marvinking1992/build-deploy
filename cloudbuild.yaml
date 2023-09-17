@@ -33,7 +33,7 @@ steps:
 
 secrets:
   - secretEnv:
-      GIT_TOKEN: projects/122299159109/secrets/github/versions/latest  # Replace [PROJECT_ID] and [SECRET_NAME] with appropriate values
+      $_GIT_TOKEN: projects/122299159109/secrets/github/versions/latest  # Replace [PROJECT_ID] and [SECRET_NAME] with appropriate values
 
 
 # No direct deployment steps to GKE since Cloud Deploy will handle this
