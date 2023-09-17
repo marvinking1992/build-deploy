@@ -21,7 +21,7 @@ steps:
   - |
     git config --global user.email "spacetimecollege@gmail.com" &&
     git config --global user.name "marvinking1992" &&
-    (git remote add origin <https://github.com/marvinking1992/hello-world-app> || true) &&
+    (git remote add origin https://github.com/marvinking1992/hello-world-app || true) &&
     git checkout main &&
     git pull origin main --rebase &&
     sed -i 's|us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:[^ ]*|us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA|' app-deployment.yaml && 
