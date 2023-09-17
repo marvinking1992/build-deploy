@@ -18,7 +18,7 @@ steps:
   - '-c'
   - > 
     gcloud deploy releases create release-$BUILD_ID
-    --delivery-pipeline=app
+    --delivery-pipeline=app-deployment
     --region=us-central1
     --source=./
     --images=app=us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA
