@@ -19,6 +19,8 @@ steps:
   args:
   - '-c'
   - |
+    git config --global user.email "spacetimecollege@gmail.com" &&
+    git config --global user.name "marvinking1992" &&
     sed -i 's|us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:[^ ]*|us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA|' app-deployment.yaml && 
     git commit -am "Update image tag to $SHORT_SHA" &&
     git push
