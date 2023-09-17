@@ -32,8 +32,9 @@ steps:
   waitFor: ['Push to Artifact Registry']
 
 secrets:
-  - secretEnv:
-      _GIT_TOKEN: projects/122299159109/secrets/github/versions/latest  # Replace [PROJECT_ID] and [SECRET_NAME] with appropriate values
+  - kmsKeyName: projects/ambient-tuner-373312/locations/global/keyRings/keyring/cryptoKeys/githubkey
+    secretEnv:
+      GIT_TOKEN: projects/ambient-tuner-373312/secrets/githubtoken/versions/latest
 
 
 # No direct deployment steps to GKE since Cloud Deploy will handle this
