@@ -16,13 +16,13 @@ steps:
 # Step 3: Update Deployment Configuration
 - name: 'alpine/git'  # Using alpine/git to perform git operations
   entrypoint: 'sh'
+  secretEnv: ['GIT_TOKEN']   # Reference to the secret environment variable
   args:
   - '-c'
   - |
     git config --global user.email "spacetimecollege@gmail.com" &&
     git config --global user.name "marvinking1992" &&
-    git remote | grep origin || git remote add origin https://github.com/marvinking1992/hello-world-app &&
-    git fetch &&
+    (git remote add origin https://$GIT_TOKEN@github.com/marvinking1992/hello-world-app.git || true) &&
     git checkout main &&
     git pull origin main --rebase &&
     sed -i 's|us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:[^ ]*|us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA|' app-deployment.yaml && 
@@ -30,6 +30,10 @@ steps:
     git push --set-upstream origin main
   id: 'Update Deployment Config'
   waitFor: ['Push to Artifact Registry']
+
+secrets:
+  - secretEnv:
+      GIT_TOKEN: projects/122299159109/secrets/github/versions/latest  # Replace [PROJECT_ID] and [SECRET_NAME] with appropriate values
 
 
 # No direct deployment steps to GKE since Cloud Deploy will handle this
