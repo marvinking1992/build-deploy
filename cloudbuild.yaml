@@ -13,6 +13,7 @@ steps:
   id: 'Push to Artifact Registry'
   waitFor: ['Build Docker Image']  # This ensures the push only happens after the build step completes.
 
+# ... 
 # Step 3: Update Deployment Configuration
 - name: 'alpine/git'  # Using alpine/git to perform git operations
   entrypoint: 'sh'
@@ -21,11 +22,15 @@ steps:
   - |
     git config --global user.email "spacetimecollege@gmail.com" &&
     git config --global user.name "marvinking1992" &&
+    git remote add origin <YOUR_GITHUB_REPO_URL> || echo "Remote already exists" &&
+    git checkout main &&
+    git pull origin main --rebase &&
     sed -i 's|us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:[^ ]*|us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA|' app-deployment.yaml && 
     git commit -am "Update image tag to $SHORT_SHA" &&
-    git push
+    git push --set-upstream origin main
   id: 'Update Deployment Config'
   waitFor: ['Push to Artifact Registry']
+
 
 # No direct deployment steps to GKE since Cloud Deploy will handle this
 
