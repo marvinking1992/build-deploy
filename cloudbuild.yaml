@@ -13,42 +13,19 @@ steps:
   id: 'Push to Artifact Registry'
   waitFor: ['Build Docker Image']  # This ensures the push only happens after the build step completes.
 
-# Step 3: Apply the Deployment
-- name: 'gcr.io/cloud-builders/kubectl'
+# Step 3: Update Deployment Configuration
+- name: 'alpine/git'  # Using alpine/git to perform git operations
+  entrypoint: 'sh'
   args:
-  - 'apply'
-  - '-f'
-  - 'app-deployment.yaml'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1' 
-  - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
-  id: 'Apply Deployment'
+  - '-c'
+  - |
+    sed -i 's|us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:[^ ]*|us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA|' app-deployment.yaml && 
+    git commit -am "Update image tag to $SHORT_SHA" &&
+    git push
+  id: 'Update Deployment Config'
   waitFor: ['Push to Artifact Registry']
 
-# Step 3: Deploy to GKE
-- name: 'gcr.io/cloud-builders/kubectl'
-  args: 
-  - 'set'
-  - 'image'
-  - 'deployment/app-deployment'
-  - 'app=us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1' 
-  - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
-  id: 'Deploy to GKE'
-  waitFor: ['Apply Deployment']
-
-- name: 'gcr.io/cloud-builders/kubectl'
-  args: 
-  - 'apply'
-  - '-f'
-  - 'service.yaml'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1' 
-  - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
-  id: 'Apply Service'
-  waitFor: ['Deploy to GKE']
-
+# No direct deployment steps to GKE since Cloud Deploy will handle this
 
 # Images list. This section helps in logging the built images for potential deployments or for reference.
 images:
