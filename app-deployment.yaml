@@ -1,11 +1,19 @@
----
-apiVersion: deploy.cloud.google.com/v1beta1
-kind: DeliveryPipeline
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: app-deployment
-description: Hello World Deployment Pipeline 
-serialPipeline:
-  stages:
-    - targetId: staging
-    - targetId: production
-
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app-container
+        image: us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA
+        ports:
+        - containerPort: 8080
