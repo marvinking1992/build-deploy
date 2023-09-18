@@ -8,6 +8,7 @@ serialPipeline:
     - targetId: staging
     - targetId: production
 
+---
 
 apiVersion: deploy.cloud.google.com/v1beta1
 kind: Target
