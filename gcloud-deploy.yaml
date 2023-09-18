@@ -1,4 +1,3 @@
----
 apiVersion: deploy.cloud.google.com/v1beta1
 kind: DeliveryPipeline
 metadata:
@@ -9,6 +8,7 @@ serialPipeline:
     - targetId: staging
     - targetId: production
 
+---
 apiVersion: deploy.cloud.google.com/v1beta1
 kind: Target
 metadata:
@@ -16,6 +16,7 @@ metadata:
 description: Staging Environment
 gke:
   cluster: projects/ambient-tuner-373312/locations/us-central1/clusters/staging
+
 ---
 apiVersion: deploy.cloud.google.com/v1beta1
 kind: Target
