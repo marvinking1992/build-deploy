@@ -16,4 +16,4 @@ spec:
       - name: app-container
         image: us-central1-docker.pkg.dev/ambient-tuner-373312/my-repo/app:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 5000
