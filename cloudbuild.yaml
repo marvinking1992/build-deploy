@@ -18,7 +18,7 @@ steps:
   - 'deploy'
   - 'my-service' # Name of your Cloud Run service
   - '--image'
-  - 'us-central1-docker.pkg.dev/ambient-tuner-37331/my-repo/app:$SHORT_SHA'
+  - 'us-central1-docker.pkg.dev/ambient-tuner-373312/my-repo/app:$SHORT_SHA'
   - '--region'
   - 'us-central1'
   - '--platform'
