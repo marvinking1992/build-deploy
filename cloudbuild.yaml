@@ -11,15 +11,39 @@ steps:
   id: 'Push to Artifact Registry'
   waitFor: ['Build Docker Image']  # This ensures the push only happens after the build step completes.
 
-# Step 3: Deploy the application using Google Cloud Deploy
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: 'bash'
+# Step 3: Apply the Deployment
+- name: 'gcr.io/cloud-builders/kubectl'
   args:
-  - '-c'
-  - > 
-    gcloud deploy releases create release-$BUILD_ID
-    --delivery-pipeline=app-deployment
-    --region=us-central1
-    --source=./
-    --images=app=us-central1-docker.pkg.dev/ambient-tuner-373312/my-repo/app:latest
-  waitFor: ['Push to Artifact Registry']  # This ensures the deploy only happens after the push step completes.
+  - 'apply'
+  - '-f'
+  - 'app-deployment.yaml'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1' 
+  - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
+  id: 'Apply Deployment'
+  waitFor: ['Push to Artifact Registry']
+
+# Step 4: Deploy to GKE
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: 
+  - 'set'
+  - 'image'
+  - 'deployment/app-deployment'
+  - 'app=us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/app:$SHORT_SHA'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1' 
+  - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
+  id: 'Deploy to GKE'
+  waitFor: ['Apply Deployment']
+
+# Step 5: Applying the Service.yaml file
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: 
+  - 'apply'
+  - '-f'
+  - 'service.yaml'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1' 
+  - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
+  id: 'Apply Service'
+  waitFor: ['Deploy to GKE']
