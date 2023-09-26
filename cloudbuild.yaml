@@ -11,15 +11,32 @@ steps:
   id: 'Push to Artifact Registry'
   waitFor: ['Build Docker Image']  # This ensures the push only happens after the build step completes.
 
-# Step 3: Deploy the application using Google Cloud Deploy
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: 'bash'
+# Step 1: Build the Docker image
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/PROJECT-ID/my-repo/app:$SHORT_SHA', '.']
+  id: 'Build Docker Image'
+  waitFor: ['-']  # This ensures the step starts immediately.
+
+# Step 2: Push the Docker image to Google Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/PROJECT-ID/my-repo/app:$SHORT_SHA']
+  id: 'Push to Artifact Registry'
+  waitFor: ['Build Docker Image']
+
+# Step 3: Deploy to Cloud Run
+- name: 'gcr.io/cloud-builders/gcloud'
   args:
-  - '-c'
-  - > 
-    gcloud deploy releases create release-$BUILD_ID
-    --delivery-pipeline=app-deployment
-    --region=us-central1
-    --source=./
-    --images=app=us-central1-docker.pkg.dev/ambient-tuner-373312/my-repo/app:$SHORT_SHA
-  waitFor: ['Push to Artifact Registry']  # This ensures the deploy only happens after the push step completes.
+  - 'run'
+  - 'deploy'
+  - 'my-service' # Name of your Cloud Run service
+  - '--image'
+  - 'us-central1-docker.pkg.dev/PROJECT-ID/my-repo/app:$SHORT_SHA'
+  - '--region'
+  - 'us-central1'
+  - '--platform'
+  - 'managed'
+  - '--allow-unauthenticated' # Remove if you want to require authentication to access
+  id: 'Deploy to Cloud Run'
+  waitFor: ['Push to Artifact Registry']
+
