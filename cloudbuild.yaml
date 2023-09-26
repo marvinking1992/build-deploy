@@ -14,13 +14,13 @@ steps:
 # Step 1: Build the Docker image
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/PROJECT-ID/my-repo/app:$SHORT_SHA', '.']
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/ambient-tuner-37331/my-repo/app:$SHORT_SHA', '.']
   id: 'Build Docker Image'
   waitFor: ['-']  # This ensures the step starts immediately.
 
 # Step 2: Push the Docker image to Google Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/PROJECT-ID/my-repo/app:$SHORT_SHA']
+  args: ['push', 'us-central1-docker.pkg.dev/ambient-tuner-37331/my-repo/app:$SHORT_SHA']
   id: 'Push to Artifact Registry'
   waitFor: ['Build Docker Image']
 
@@ -31,7 +31,7 @@ steps:
   - 'deploy'
   - 'my-service' # Name of your Cloud Run service
   - '--image'
-  - 'us-central1-docker.pkg.dev/PROJECT-ID/my-repo/app:$SHORT_SHA'
+  - 'us-central1-docker.pkg.dev/ambient-tuner-37331/my-repo/app:$SHORT_SHA'
   - '--region'
   - 'us-central1'
   - '--platform'
