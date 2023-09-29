@@ -54,16 +54,18 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
   - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
+  waitFor: ['Apply Service'] 
 
-  - name: 'gcr.io/cloud-builders/kubectl'
+- name: 'gcr.io/cloud-builders/kubectl'
   args: ['apply', '-f', 'virtualservice.yaml']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
   - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
-  
-   - name: 'gcr.io/cloud-builders/kubectl'
+  waitFor: ['Apply Service'] 
+
+- name: 'gcr.io/cloud-builders/kubectl'
   args: ['apply', '-f', 'destinationrule.yaml']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
   - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
-  waitFor: ['Apply Service']  
+  waitFor: ['Apply Service']
