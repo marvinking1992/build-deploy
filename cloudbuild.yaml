@@ -48,9 +48,21 @@ steps:
   id: 'Apply Service'
   waitFor: ['Deploy to GKE']
 
-# Step 6: Applying the Gateway.yaml file
+# Step 6: Applying the new yaml files
 - name: 'gcr.io/cloud-builders/kubectl'
   args: ['apply', '-f', 'gateway.yaml']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
+
+  - name: 'gcr.io/cloud-builders/kubectl'
+  args: ['apply', '-f', 'virtualservice.yaml']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
+  
+   - name: 'gcr.io/cloud-builders/kubectl'
+  args: ['apply', '-f', 'destinationrule.yaml']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
   - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
